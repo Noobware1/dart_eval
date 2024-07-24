@@ -233,6 +233,7 @@ class BoxString implements EvcOp {
   @override
   void run(Runtime runtime) {
     final reg = _reg;
+
     runtime.frame[reg] = $String(runtime.frame[reg] as String);
   }
 

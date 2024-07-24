@@ -674,7 +674,7 @@ class TypeRef {
 
     if (slot == AsyncTypes.futureOr.ref(ctx)) {
       return slot.nullable ||
-          slot == CoreTypes.future.ref(ctx) ||
+          this == CoreTypes.future.ref(ctx) ||
           (slot.specifiedTypeArgs.isNotEmpty &&
               slot.specifiedTypeArgs[0] == this);
     }

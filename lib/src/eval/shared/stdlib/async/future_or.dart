@@ -30,11 +30,10 @@ class $FutureOr<T> implements $Instance {
     if ($value is Future) {
       _future = $Future.wrap($value as Future);
       _object = null;
-    } else if ($value is Object) {
-      _object = $Object($value as Object);
-      _future = null;
     } else {
-      _object = null;
+      if ($value is $Instance) {
+        _object = $value as $Instance;
+      }
       _future = null;
     }
   }
@@ -43,37 +42,50 @@ class $FutureOr<T> implements $Instance {
   final FutureOr<T> $value;
 
   @override
-  FutureOr get $reified => $value is Future
+  FutureOr<T> get $reified => $value is Future
       ? ($value as Future)
-          .then((value) => value is $Value ? value.$reified : value)
+          .then((value) => value is $Value ? value.$value : value)
       : $value is $Value
           ? ($value as $Value).$reified
           : $value;
 
-  late final $Instance? _object;
+  $Instance? _object;
 
   late final $Instance? _future;
 
-  static const $type = BridgeTypeRef(CoreTypes.future);
+  static const $type = BridgeTypeRef(AsyncTypes.futureOr);
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    try {
-      return _object!.$getProperty(runtime, identifier);
-    } catch (_) {
+    if (_future != null) {
       return _future!.$getProperty(runtime, identifier);
+    } else {
+      _setObject(runtime);
+      return _object!.$getProperty(runtime, identifier);
     }
   }
 
   @override
   void $setProperty(Runtime runtime, String identifier, $Value value) {
-    try {
-      return _object!.$setProperty(runtime, identifier, value);
-    } catch (_) {
-      return _future!.$setProperty(runtime, identifier, value);
+    if (_future != null) {
+      _future!.$setProperty(runtime, identifier, value);
+    } else {
+      _setObject(runtime);
+      _object!.$setProperty(runtime, identifier, value);
     }
   }
 
   @override
-  int $getRuntimeType(Runtime runtime) => runtime.lookupType(CoreTypes.future);
+  int $getRuntimeType(Runtime runtime) => $value is Future
+      ? runtime.lookupType(CoreTypes.future)
+      : ($value is $Value
+          ? ($value as $Value).$getRuntimeType(runtime)
+          : runtime.wrap($value).$getRuntimeType(runtime));
+
+  void _setObject(Runtime runtime) {
+    final wrapped = runtime.wrap($value);
+    if (wrapped is $Instance) {
+      _object = wrapped;
+    }
+  }
 }
