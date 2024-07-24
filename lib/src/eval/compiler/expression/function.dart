@@ -99,7 +99,7 @@ Variable compileFunctionExpression(FunctionExpression e, CompilerContext ctx,
     ctx.beginAllocScope();
     final V = compileExpression(b.expression, ctx);
     stInfo = doReturn(
-        ctx, AlwaysReturnType(CoreTypes.dynamic.ref(ctx), true), V,
+        ctx, AlwaysReturnType(CoreTypes.dynamic.ref(ctx), true),   V,
         isAsync: b.isAsynchronous);
     ctx.endAllocScope();
   } else {

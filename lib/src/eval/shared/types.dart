@@ -158,6 +158,9 @@ class AsyncTypes {
 
   /// Bridge type spec for [$Zone]
   static const zone = BridgeTypeSpec('dart:async', 'Zone');
+
+  /// Bridge type spec for [$FutureOr]
+  static const futureOr = BridgeTypeSpec('dart:async', 'FutureOr');
 }
 
 /// This class contains dart:collection bridge type specs for convenience

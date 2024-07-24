@@ -337,15 +337,35 @@ DeclarationOrBridge<MethodDeclaration, BridgeMethodDef> resolveInstanceMethod(
   final _dec =
       ctx.topLevelDeclarationsMap[instanceType.file]![instanceType.name]!;
   final _bottomType = bottomType ?? instanceType;
+
   if (_dec.isBridge) {
     // Bridge
     final bridge = _dec.bridge!;
     final method = bridge is BridgeClassDef
         ? bridge.methods[methodName]
         : (bridge as BridgeEnumDef).methods[methodName];
+
     if (method == null) {
       final $extendsBridgeType =
           bridge is BridgeClassDef ? bridge.type.$extends : null;
+      DeclarationOrBridge<MethodDeclaration, BridgeMethodDef>? dec;
+      if (bridge is BridgeClassDef) {
+        final $implements = bridge.type.$implements;
+        if ($implements.isNotEmpty) {
+          for (var i in $implements) {
+            final $implementsType = TypeRef.fromBridgeTypeRef(ctx, i);
+            try {
+              dec = resolveInstanceMethod(
+                  ctx, $implementsType, methodName, source, _bottomType);
+            } catch (_) {}
+          }
+        }
+
+        if (dec != null) {
+          return dec;
+        }
+      }
+
       if ($extendsBridgeType == null && bridge is! BridgeEnumDef) {
         throw CompileError('Unknown method $_bottomType.$methodName', source);
       }

@@ -1,4 +1,5 @@
 import 'package:dart_eval/dart_eval_bridge.dart';
+import 'package:dart_eval/src/eval/shared/stdlib/async/future_or.dart';
 import 'package:dart_eval/src/eval/shared/stdlib/async/stream.dart';
 import 'package:dart_eval/src/eval/shared/stdlib/async/stream_controller.dart';
 import 'package:dart_eval/src/eval/shared/stdlib/async/timer.dart';
@@ -19,6 +20,7 @@ class DartAsyncPlugin implements EvalPlugin {
     registry.defineBridgeClass($Zone.$declaration);
     registry.defineBridgeClass($StreamView.$declaration);
     registry.defineBridgeClass($Timer.$declaration);
+    registry.defineBridgeClass($FutureOr.$declaration);
   }
 
   @override

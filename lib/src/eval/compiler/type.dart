@@ -672,6 +672,13 @@ class TypeRef {
 
     final generics = overrideGenerics ?? specifiedTypeArgs;
 
+    if (slot == AsyncTypes.futureOr.ref(ctx)) {
+      return slot.nullable ||
+          slot == CoreTypes.future.ref(ctx) ||
+          (slot.specifiedTypeArgs.isNotEmpty &&
+              slot.specifiedTypeArgs[0] == this);
+    }
+
     if (this == slot) {
       for (var i = 0; i < generics.length; i++) {
         if (slot.specifiedTypeArgs.length - 1 > i) {
@@ -891,6 +898,7 @@ class AlwaysReturnType implements ReturnType {
   }
 
   final TypeRef? type;
+
   final bool nullable;
 
   @override
