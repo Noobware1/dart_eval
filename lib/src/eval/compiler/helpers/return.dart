@@ -55,6 +55,8 @@ StatementInfo doReturn(
     final expected = expectedReturnType.type ?? CoreTypes.dynamic.ref(ctx);
     var _value = value;
     if (!_value.type.isAssignableTo(ctx, expected)) {
+      print([value.type, expected]);
+
       throw CompileError('Cannot return ${_value.type} (expected: $expected)');
     }
     if (expected.isUnboxedAcrossFunctionBoundaries &&

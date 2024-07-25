@@ -666,17 +666,20 @@ class TypeRef {
       return true;
     }
 
-    if (this == CoreTypes.nullType.ref(ctx)) {
-      return slot.nullable || slot == CoreTypes.nullType.ref(ctx);
-    }
-
     final generics = overrideGenerics ?? specifiedTypeArgs;
 
-    if (slot == AsyncTypes.futureOr.ref(ctx)) {
-      return slot.nullable ||
-          this == CoreTypes.future.ref(ctx) ||
-          (slot.specifiedTypeArgs.isNotEmpty &&
-              slot.specifiedTypeArgs[0] == this);
+    if (slot == AsyncTypes.futureOr.ref(ctx) && this != slot) {
+      if (this == CoreTypes.nullType.ref(ctx)) {
+        return slot.nullable || slot.specifiedTypeArgs[0].nullable;
+      } else if (this == CoreTypes.future.ref(ctx)) {
+        return generics[0].isAssignableTo(ctx, slot.specifiedTypeArgs[0]);
+      } else {
+        return isAssignableTo(ctx, slot.specifiedTypeArgs[0]);
+      }
+    }
+
+    if (this == CoreTypes.nullType.ref(ctx)) {
+      return slot.nullable || slot == CoreTypes.nullType.ref(ctx);
     }
 
     if (this == slot) {

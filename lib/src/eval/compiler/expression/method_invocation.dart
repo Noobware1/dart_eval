@@ -350,6 +350,7 @@ DeclarationOrBridge<MethodDeclaration, BridgeMethodDef> resolveInstanceMethod(
           bridge is BridgeClassDef ? bridge.type.$extends : null;
       DeclarationOrBridge<MethodDeclaration, BridgeMethodDef>? dec;
       if (bridge is BridgeClassDef) {
+        // todo: fix this
         final $implements = bridge.type.$implements;
         if ($implements.isNotEmpty) {
           for (var i in $implements) {
